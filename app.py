@@ -1,6 +1,7 @@
-# app.py
+# Essentials
 from flask import Flask
 from flask_cors import CORS
+# Routes
 from routes.data import get_data
 from routes.rooms import get_rooms, create_room
 from routes.hotels import get_hotels
