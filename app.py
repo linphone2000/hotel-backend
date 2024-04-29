@@ -25,34 +25,34 @@ def get_image_route(image_id):
     return get_image(image_id)
 
 
-# Rooms route
-@app.route('/rooms', methods=['GET'])
-def get_rooms_route():
-    return get_rooms()
-
-
-# Route to get hotel by ID
-@app.route('/rooms/<hotel_id>', methods=['GET'])
-def get_rooms_by_hotel_id_route(hotel_id):
-    return get_rooms_by_hotel_id(hotel_id)
-
-
-# Hotels route
-@app.route('/hotels', methods=['GET'])
-def get_hotels_route():
-    return get_hotels()
-
-
-# Add hotel route
+# Crete hotel route
 @app.route('/hotels', methods=['POST'])
 def create_hotel_route():
     return create_hotel()
 
 
+# Read Hotels route
+@app.route('/hotels', methods=['GET'])
+def get_hotels_route():
+    return get_hotels()
+
+
+# Read Route to get hotel by ID
+@app.route('/rooms/<hotel_id>', methods=['GET'])
+def get_rooms_by_hotel_id_route(hotel_id):
+    return get_rooms_by_hotel_id(hotel_id)
+
+
 # Create room route
-@app.route('/rooms', methods=['POST'])
+@app.route('/rooms/', methods=['POST'])
 def create_room_route():
     return create_room()
+
+
+# Read Rooms route
+@app.route('/rooms', methods=['GET'])
+def get_rooms_route():
+    return get_rooms()
 
 
 # Register route

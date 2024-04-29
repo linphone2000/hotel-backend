@@ -1,5 +1,4 @@
 from database import database, save_image_to_gridfs
-from bson import ObjectId
 from flask import jsonify, request
 
 
@@ -11,13 +10,20 @@ def get_hotels():
         for hotel in hotels:
             # Convert _id to string
             hotel_id = str(hotel['_id'])
-            # Fetch rooms associated with the hotel
-            # Update hotel details
             updated_hotel = {
                 '_id': hotel_id,
                 'name': hotel['name'],
                 'city': hotel['city'],
                 'image': hotel['image'],
+                'address': hotel['address'],
+                'description': hotel['description'],
+                'rating': hotel['rating'],
+                'checkInTime': hotel['checkInTime'],
+                'checkOutTime': hotel['checkOutTime'],
+                'hotelEmail': hotel['hotelEmail'],
+                'hotelPhone': hotel['hotelPhone'],
+                'amenities': hotel['amenities'],
+                'review': hotel['reviews']
             }
             updated_hotels.append(updated_hotel)
         return jsonify(updated_hotels), 200
