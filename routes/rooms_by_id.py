@@ -3,7 +3,6 @@ from database import database
 
 
 def get_rooms_by_hotel_id(hotel_id):
-    print("Route called")
     try:
         rooms = list(database.rooms.find({'hotelID': hotel_id}))
         if rooms:

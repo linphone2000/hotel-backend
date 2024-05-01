@@ -8,6 +8,7 @@ from routes.hotels import get_hotels, create_hotel
 from routes.auth import register, login
 from routes.image import get_image
 from routes.rooms_by_id import get_rooms_by_hotel_id
+from routes.hotels import get_hotel_by_hotel_id
 
 app = Flask(__name__)
 CORS(app)
@@ -35,6 +36,11 @@ def create_hotel_route():
 @app.route('/hotels', methods=['GET'])
 def get_hotels_route():
     return get_hotels()
+
+# Read Hotel by id
+@app.route('/hotels/<hotel_id>', methods=['GET'])
+def get_hotel_by_id_route(hotel_id):
+    return get_hotel_by_hotel_id(hotel_id)
 
 
 # Read Route to get hotel by ID

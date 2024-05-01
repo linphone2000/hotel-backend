@@ -1,3 +1,4 @@
+from bson import ObjectId, json_util
 from database import database, save_image_to_gridfs
 from flask import jsonify, request
 
@@ -29,6 +30,17 @@ def get_hotels():
         return jsonify(updated_hotels), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# Get hotel by id
+def get_hotel_by_hotel_id(hotel_id):
+    try:
+        hotel_id_obj = ObjectId(hotel_id)
+        hotel = database.hotels.find_one({'_id': hotel_id_obj})
+        hotel['_id'] = str(hotel['_id'])
+        return jsonify(hotel), 200
+    except Exception as e:
+        return "Error: "+str(e), 500
 
 
 # Post hotel route
