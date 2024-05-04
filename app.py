@@ -7,7 +7,7 @@ from routes.rooms import get_rooms, create_room
 from routes.hotels import get_hotels, create_hotel
 from routes.auth import register, login
 from routes.image import get_image
-from routes.rooms_by_id import get_rooms_by_hotel_id
+from routes.rooms_by_id import get_rooms_by_hotel_id, get_single_room
 from routes.hotels import get_hotel_by_hotel_id
 
 app = Flask(__name__)
@@ -37,6 +37,7 @@ def create_hotel_route():
 def get_hotels_route():
     return get_hotels()
 
+
 # Read Hotel by id
 @app.route('/hotels/<hotel_id>', methods=['GET'])
 def get_hotel_by_id_route(hotel_id):
@@ -59,6 +60,12 @@ def create_room_route():
 @app.route('/rooms', methods=['GET'])
 def get_rooms_route():
     return get_rooms()
+
+
+# Read single room route
+@app.route('/rooms/get_room/<room_id>', methods=['GET'])
+def get_single_room_route(room_id):
+    return get_single_room(room_id)
 
 
 # Register route
