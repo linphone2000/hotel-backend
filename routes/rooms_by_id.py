@@ -25,7 +25,6 @@ def get_single_room(room_id):
             # Room is still being fetched, respond with a 202 status code (Accepted)
             return "Room data is still being fetched", 202
         room['_id'] = str(room['_id'])
-        print(room)
         return jsonify(room), 200
     except Exception as e:
         return "Error: " + str(e), 500

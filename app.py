@@ -9,6 +9,7 @@ from routes.auth import register, login
 from routes.image import get_image
 from routes.rooms_by_id import get_rooms_by_hotel_id, get_single_room
 from routes.hotels import get_hotel_by_hotel_id
+from routes.book import book
 
 app = Flask(__name__)
 CORS(app)
@@ -66,6 +67,12 @@ def get_rooms_route():
 @app.route('/rooms/get_room/<room_id>', methods=['GET'])
 def get_single_room_route(room_id):
     return get_single_room(room_id)
+
+
+# Book route
+@app.route('/book', methods=['POST'])
+def book_route():
+    return book()
 
 
 # Register route
