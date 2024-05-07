@@ -9,13 +9,13 @@ from routes.auth import register, login
 from routes.image import get_image
 from routes.rooms_by_id import get_rooms_by_hotel_id, get_single_room
 from routes.hotels import get_hotel_by_hotel_id
-from routes.book import book
+from routes.book import book, book_delete, get_bookings, get_bookings_by_user
 
 app = Flask(__name__)
 CORS(app)
 
 
-# Home route
+# Home route just sample
 @app.route('/')
 def get_data_route():
     return get_data()
@@ -27,6 +27,7 @@ def get_image_route(image_id):
     return get_image(image_id)
 
 
+# Hotels
 # Crete hotel route
 @app.route('/hotels', methods=['POST'])
 def create_hotel_route():
@@ -51,6 +52,7 @@ def get_rooms_by_hotel_id_route(hotel_id):
     return get_rooms_by_hotel_id(hotel_id)
 
 
+# Rooms
 # Create room route
 @app.route('/rooms/', methods=['POST'])
 def create_room_route():
@@ -69,12 +71,32 @@ def get_single_room_route(room_id):
     return get_single_room(room_id)
 
 
+# Bookings
 # Book route
 @app.route('/book', methods=['POST'])
 def book_route():
     return book()
 
 
+# Book delete route
+@app.route('/book/<bookingID>', methods=['DELETE'])
+def book_delete_route(bookingID):
+    return book_delete(bookingID)
+
+
+# Get bookings route
+@app.route('/bookings', methods=['GET'])
+def get_bookings_route():
+    return get_bookings()
+
+
+# Get bookings by user route
+@app.route('/bookings/<userID>', methods=['GET'])
+def get_bookings_by_user_route(userID):
+    return get_bookings_by_user(userID)
+
+
+# Auth
 # Register route
 @app.route('/register', methods=['POST'])
 def register_route():

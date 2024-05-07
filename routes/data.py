@@ -3,6 +3,6 @@ from bson import json_util
 
 # Get route
 def get_data():
-    fruits = database.fruits.find()
-    formatted_fruits = json_util.dumps(fruits)
-    return formatted_fruits, 200
+    hotels = database.hotels.find()
+    formatted_hotels = json_util.dumps(hotels)
+    return formatted_hotels, 200
