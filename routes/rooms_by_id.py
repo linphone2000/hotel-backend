@@ -18,7 +18,6 @@ def get_rooms_by_hotel_id(hotel_id):
 
 def get_single_room(room_id):
     try:
-        print(type(room_id))
         room_id_obj = ObjectId(room_id)
         room = database.rooms.find_one({'_id': room_id_obj})
         if room is None:

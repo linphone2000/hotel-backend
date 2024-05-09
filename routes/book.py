@@ -27,6 +27,8 @@ def get_bookings_by_user(userID):
                     {'_id': ObjectId(booking['hotelID'])})
                 room = database.rooms.find_one(
                     {'_id': ObjectId(booking['roomID'])})
+                user = database.users.find_one(
+                    {'_id': ObjectId(booking['userID'])})
                 updated_booking = {
                     '_id': str(booking['_id']),
                     'userID': booking['userID'],
@@ -46,12 +48,15 @@ def get_bookings_by_user(userID):
                     'hotelPhone': hotel['hotelPhone'],
                     # Additional Room Info
                     'roomNumber': room['roomNumber'],
-                    'roomType': room['roomType']
+                    'roomType': room['roomType'],
+                    # User info
+                    'userEmail': user['email'],
+                    'userPhone': user['phone'],
+                    'userAddress': user['address'],
+                    'userFullName': user['fullName']
                 }
                 updated_bookings.append(updated_booking)
             updated_bookings.sort(key=lambda x: x['stayDates'][0])
-            # booking['stayDates'][0]
-            print(updated_bookings)
             return jsonify(updated_bookings), 200
         else:
             return 'No bookings', 204
@@ -95,17 +100,19 @@ def book():
 def book_delete(bookingID):
     try:
         booking = database.bookings.find_one({'_id': ObjectId(bookingID)})
+        if (booking):
+            # Remove unavailable dates from room
+            database.rooms.update_one(
+                {'_id': ObjectId(booking['roomID']), 'unavailable_dates': {
+                    '$in': booking['stayDates']}},
+                {'$pull': {'unavailable_dates': {'$in': booking['stayDates']}}}
+            )
 
-        # Remove unavailable dates from room
-        database.rooms.update_one(
-            {'_id': ObjectId(booking['roomID']), 'unavailable_dates': {
-                '$in': booking['stayDates']}},
-            {'$pull': {'unavailable_dates': {'$in': booking['stayDates']}}}
-        )
+            # Delete booking
+            database.bookings.delete_one({'_id': booking['_id']})
 
-        # Delete booking
-        database.bookings.delete_one({'_id': booking['_id']})
-
-        return "Success", 200
+            return "Success", 200
+        else:
+            return "No booking found!", 204
     except Exception as e:
         return "Error: "+str(e), 500
