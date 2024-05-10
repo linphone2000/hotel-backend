@@ -6,10 +6,45 @@ from database import database
 # Get All Bookings
 def get_bookings():
     try:
+        updated_bookings = []
         bookings = list(database.bookings.find({}))
-        for booking in bookings:
-            # Convert Object_id to string
-            booking['_id'] = str(booking['_id'])
+        if bookings:
+            for booking in bookings:
+                hotel = database.hotels.find_one(
+                    {'_id': ObjectId(booking['hotelID'])})
+                room = database.rooms.find_one(
+                    {'_id': ObjectId(booking['roomID'])})
+                user = database.users.find_one(
+                    {'_id': ObjectId(booking['userID'])})
+                updated_booking = {
+                    '_id': str(booking['_id']),
+                    'userID': booking['userID'],
+                    'roomID': booking['roomID'],
+                    'hotelID': booking['hotelID'],
+                    'stayDates': booking['stayDates'],
+                    'totalPrice': booking['totalPrice'],
+                    'creationDate': booking['creationDate'],
+                    # Additional Hotel Info
+                    'hotelName': hotel['name'],
+                    'hotelImage': hotel['image'],
+                    'hotelAddress': hotel['address'],
+                    'hotelRating': hotel['rating'],
+                    'hotelCheckIn': hotel['checkInTime'],
+                    'hotelCheckOut': hotel['checkOutTime'],
+                    'hotelEmail': hotel['hotelEmail'],
+                    'hotelPhone': hotel['hotelPhone'],
+                    # Additional Room Info
+                    'roomNumber': room['roomNumber'],
+                    'roomType': room['roomType'],
+                    # User info
+                    'userEmail': user['email'],
+                    'userPhone': user['phone'],
+                    'userAddress': user['address'],
+                    'userFullName': user['fullName']
+                }
+                updated_bookings.append(updated_booking)
+            updated_bookings.sort(key=lambda x: x['stayDates'][0])
+            return jsonify(updated_bookings), 200
 
         return jsonify(bookings), 200
     except Exception as e:

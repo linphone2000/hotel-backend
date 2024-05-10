@@ -97,10 +97,33 @@ def edit_user(userID):
                 'address': updated_user['address'],
                 'image': updated_user['image']
             }
-            print(updated_user_to_return)
             return jsonify({'user': updated_user_to_return}), 200
         else:
             return "No user found!", 204
+    except Exception as e:
+        return "Error: "+str(e), 500
+
+
+# Get all users route
+def get_all_users():
+    try:
+        users = list(database.users.find({}))
+        users_to_return = []
+        if users:
+            for user in users:
+                userID = str(user['_id'])
+                user_to_return = {
+                    '_id': userID,
+                    'email': user['email'],
+                    'fullName': user['fullName'],
+                    'phone': user['phone'],
+                    'address': user['address'],
+                    'image': user['image']
+                }
+                users_to_return.append(user_to_return)
+            return jsonify(users_to_return), 200
+        else:
+            return 'No users found for the hotel', 204
     except Exception as e:
         return "Error: "+str(e), 500
 

@@ -4,8 +4,8 @@ from flask_cors import CORS
 # Routes
 from routes.data import get_data
 from routes.rooms import get_rooms, create_room
-from routes.hotels import get_hotels, create_hotel
-from routes.auth import edit_user, register, login
+from routes.hotels import edit_hotel, get_hotels, create_hotel
+from routes.auth import edit_user, get_all_users, register, login
 from routes.image import get_image
 from routes.rooms_by_id import get_rooms_by_hotel_id, get_single_room
 from routes.hotels import get_hotel_by_hotel_id
@@ -32,6 +32,12 @@ def get_image_route(image_id):
 @app.route('/hotels', methods=['POST'])
 def create_hotel_route():
     return create_hotel()
+
+
+# Edit hotel route
+@app.route('/hotels_edit/<hotelID>',methods=['POST'])
+def edit_hotel_route(hotelID):
+    return edit_hotel(hotelID)
 
 
 # Read Hotels route
@@ -113,6 +119,12 @@ def login_route():
 @app.route('/useredit/<userID>', methods=['POST'])
 def edit_user_route(userID):
     return edit_user(userID)
+
+
+# Get all users route
+@app.route('/users', methods=['GET'])
+def get_all_users_route():
+    return get_all_users()
 
 
 if __name__ == "__main__":

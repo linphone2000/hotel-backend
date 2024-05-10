@@ -77,3 +77,35 @@ def create_hotel():
         return jsonify({'message': "Hotel created successfully"}), 200
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# Edit hotel route
+def edit_hotel(hotelID):
+    try:
+        hotelID = ObjectId(hotelID)
+        hotel = database.hotels.find_one({'_id': hotelID})
+        if (hotel):
+            data = request.form
+            print(data['amenities'])
+            updated_hotel = {
+                'name': data['name'],
+                'city': data['city'],
+                'address': data['address'],
+                'description': data['description'],
+                'rating': data['rating'],
+                'checkInTime': data['checkInTime'],
+                'checkOutTime': data['checkOutTime'],
+                'hotelEmail': data['hotelEmail'],
+                'hotelPhone': data['hotelPhone'],
+                'amenities': data.getlist('amenities')
+            }
+            if request.files:
+                image = request.files['image']
+                imageID = save_image_to_gridfs(database, image)
+                updated_hotel['image'] = imageID
+            database.hotels.update_one(
+                {'_id': hotelID}, {'$set': updated_hotel}
+            )
+            return "Success", 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
