@@ -86,7 +86,6 @@ def edit_hotel(hotelID):
         hotel = database.hotels.find_one({'_id': hotelID})
         if (hotel):
             data = request.form
-            print(data['amenities'])
             updated_hotel = {
                 'name': data['name'],
                 'city': data['city'],
@@ -107,5 +106,71 @@ def edit_hotel(hotelID):
                 {'_id': hotelID}, {'$set': updated_hotel}
             )
             return "Success", 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# Favourite hotel route
+def fav_hotel(hotelID):
+    try:
+        data = request.json
+        userID = data['userID']
+        result = database.users.update_one(
+            {'_id': ObjectId(userID)},
+            {'$push': {'favIDs': hotelID}}
+        )
+        if result.matched_count == 0:
+            return jsonify({'error': 'User not found'}), 404
+        return jsonify({'message': 'success'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# Favourite hotel remove route
+def fav_hotel_remove(hotelID):
+    try:
+        data = request.json
+        userID = data['userID']
+        result = database.users.update_one(
+            {'_id': ObjectId(userID)},
+            {'$pull': {'favIDs': hotelID}}
+        )
+        if result.matched_count == 0:
+            return jsonify({'error': 'User not found'}), 404
+        return jsonify({'message': 'success'}), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+
+# Fetch favourites hotels route
+def fetch_favourites():
+    try:
+        data = request.json
+        IDs = (data['favIDs'])
+        Object_IDs = [ObjectId(ID) for ID in IDs]
+
+        favHotels = database.hotels.find({'_id': {'$in': Object_IDs}})
+        updated_hotels = []
+
+        for hotel in favHotels:
+            hotel_id = str(hotel['_id'])
+            updated_hotel = {
+                '_id': hotel_id,
+                'name': hotel['name'],
+                'city': hotel['city'],
+                'image': hotel['image'],
+                'address': hotel['address'],
+                'description': hotel['description'],
+                'rating': hotel['rating'],
+                'checkInTime': hotel['checkInTime'],
+                'checkOutTime': hotel['checkOutTime'],
+                'hotelEmail': hotel['hotelEmail'],
+                'hotelPhone': hotel['hotelPhone'],
+                'amenities': hotel['amenities'],
+                'review': hotel['reviews']
+            }
+            updated_hotels.append(updated_hotel)
+        return jsonify(updated_hotels), 200
+
     except Exception as e:
         return jsonify({'error': str(e)}), 500

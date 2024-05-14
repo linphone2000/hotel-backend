@@ -20,6 +20,57 @@ def login():
             'fullName': user['fullName'],
             'phone': user['phone'],
             'address': user['address'],
+            'image': user['image'],
+        }
+        if 'favIDs' in user and user['favIDs']:
+            updatedUser['favIDs'] = user['favIDs']
+
+        if user and hashpw(password.encode('utf-8'), user['password']) == user['password']:
+            return jsonify({'message': 'Login successful!', 'user': updatedUser}), 200
+        else:
+            return jsonify({'message': 'Invalid email or password'}), 200
+    else:
+        return jsonify({'message': "User not exists"}), 204
+
+
+# Fetch user route
+def fetch_user(userID):
+    try:
+        user = database.users.find_one({'_id': ObjectId(userID)})
+        if user:
+            updatedUser = {
+                '_id': str(user['_id']),
+                'email': user['email'],
+                'fullName': user['fullName'],
+                'phone': user['phone'],
+                'address': user['address'],
+                'image': user['image'],
+            }
+            if 'favIDs' in user and user['favIDs']:
+                updatedUser['favIDs'] = user['favIDs']
+            return jsonify({'user': updatedUser}), 200
+        else:
+            return "No user found!", 204
+    except Exception as e:
+        return "Error: "+str(e), 500
+
+
+# Admin Login route
+def admin_login():
+    data = request.form
+    print(data)
+    email = data.get('email')
+    password = data.get('password')
+
+    # Getting the user
+    user = database.admins.find_one({'email': email})
+    if user:
+        updatedUser = {
+            '_id': str(user['_id']),
+            'email': user['email'],
+            'fullName': user['fullName'],
+            'phone': user['phone'],
+            'address': user['address'],
             'image': user['image']
         }
 
@@ -39,10 +90,6 @@ def register():
     fullName = data.get('fullName')
     phone = data.get('phone')
     address = data.get('address')
-    profileImage = request.files['image']
-
-    # Saving image to database
-    profileImageID = save_image_to_gridfs(database, profileImage)
 
     # Checking for existing user
     existing_user = database.users.find_one({'email': email})
@@ -59,11 +106,43 @@ def register():
         'fullName': fullName,
         'phone': phone,
         'address': address,
-        'image': profileImageID
+        'image': "663b3694c914c88056fdf915"
     }
 
     # Insert data
     database.users.insert_one(new_user)
+    return jsonify({'message': "Registration successful.", "is_registered": True}), 200
+
+
+# Admin Register route
+def admin_register():
+    data = request.form
+    email = data.get('email')
+    password = data.get('password')
+    fullName = data.get('fullName')
+    phone = data.get('phone')
+    address = data.get('address')
+
+    # Checking for existing user
+    existing_user = database.admins.find_one({'email': email})
+    if existing_user:
+        return jsonify({'message': 'User already exists!', "is_registered": False}), 200
+
+    # Password hashing
+    hashed_password = hashpw(password.encode('utf-8'), gensalt())
+
+    # User
+    new_user = {
+        'email': email,
+        'password': hashed_password,
+        'fullName': fullName,
+        'phone': phone,
+        'address': address,
+        'image': "663b3694c914c88056fdf915"
+    }
+
+    # Insert data
+    database.admins.insert_one(new_user)
     return jsonify({'message': "Registration successful.", "is_registered": True}), 200
 
 
@@ -95,8 +174,10 @@ def edit_user(userID):
                 'fullName': updated_user['fullName'],
                 'phone': updated_user['phone'],
                 'address': updated_user['address'],
-                'image': updated_user['image']
+                'image': updated_user['image'],
             }
+            if 'favIDs' in user and user['favIDs']:
+                updated_user_to_return['favIDs'] = user['favIDs']
             return jsonify({'user': updated_user_to_return}), 200
         else:
             return "No user found!", 204
