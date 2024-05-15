@@ -4,10 +4,10 @@ from flask_cors import CORS
 # Routes
 from routes.data import get_data
 from routes.rooms import get_rooms, create_room
-from routes.hotels import edit_hotel, fav_hotel, fav_hotel_remove, fetch_favourites, get_hotels, create_hotel
+from routes.hotels import delete_hotel, edit_hotel, fav_hotel, fav_hotel_remove, fetch_favourites, get_hotels, create_hotel
 from routes.auth import admin_login, admin_register, edit_user, fetch_user, get_all_users, register, login
 from routes.image import get_image
-from routes.rooms_by_id import edit_room, get_rooms_by_hotel_id, get_single_room
+from routes.rooms_by_id import delete_room, edit_room, get_rooms_by_hotel_id, get_single_room
 from routes.hotels import get_hotel_by_hotel_id
 from routes.book import book, book_delete, get_bookings, get_bookings_by_user
 
@@ -52,10 +52,16 @@ def get_hotel_by_id_route(hotel_id):
     return get_hotel_by_hotel_id(hotel_id)
 
 
-# Read Route to get hotel by ID route
+# Read hotel by ID route
 @app.route('/rooms/<hotel_id>', methods=['GET'])
 def get_rooms_by_hotel_id_route(hotel_id):
     return get_rooms_by_hotel_id(hotel_id)
+
+
+# Delete hotel route
+@app.route('/hotel_delete/<hotel_id>', methods=['POST'])
+def delete_hotel_route(hotel_id):
+    return delete_hotel(hotel_id)
 
 
 # Favourite hotel route
@@ -99,6 +105,12 @@ def get_single_room_route(room_id):
 @app.route('/room_edit/<room_id>', methods=['POST'])
 def edit_room_route(room_id):
     return edit_room(room_id)
+
+
+# Delete room route
+@app.route('/room_delete/<room_id>', methods=['POST'])
+def delete_room_route(room_id):
+    return delete_room(room_id)
 
 
 # Bookings

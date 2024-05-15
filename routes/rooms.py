@@ -23,11 +23,11 @@ def get_rooms():
 
 # Post room route
 def create_room():
-    try:
+    # try:
         data = request.form
-        roomImage = request.files['image']
-
+        
         # Saving images to database
+        roomImage = request.files['image']
         roomImageID = save_image_to_gridfs(database, roomImage)
 
         new_room = {
@@ -42,6 +42,7 @@ def create_room():
         }
         # Insert new room into MongoDB
         database.rooms.insert_one(new_room)
+        print("Room inserted")
         return jsonify({'message': "Room created successfully"}), 200
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+    # except Exception as e:
+    #     return jsonify({'error': str(e)}), 500

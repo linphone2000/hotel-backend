@@ -174,3 +174,36 @@ def fetch_favourites():
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
+
+
+# Delete hotel route
+def delete_hotel(hotel_id):
+    try:
+        # Just for error but unlikely to happen
+        hotel = database.hotels.find_one({"_id": ObjectId(hotel_id)})
+        if not hotel:
+            return jsonify({'error': 'Hotel not found'}), 404
+
+        # Find users with the hotel in their favIDs and remove the hotel ID
+        users = database.users.find({"favIDs": hotel_id})
+        for user in users:
+            if hotel_id in user.get('favIDs', []):
+                database.users.update_one(
+                    {"_id": user['_id']},
+                    {"$pull": {"favIDs": hotel_id}}
+                )
+                print(
+                    f"Removed hotel ID {hotel_id} from user ID {user['_id']}")
+
+        # Delete hotel
+        database.hotels.delete_one({"_id": ObjectId(hotel_id)})
+
+        # Delete rooms of that hotel
+        database.rooms.delete_many({"hotelID": hotel_id})
+
+        # Delete bookings of that hotel
+        database.bookings.delete_many({"hotelID": hotel_id})
+
+        return "success", 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500

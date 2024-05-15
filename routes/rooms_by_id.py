@@ -54,3 +54,16 @@ def edit_room(room_id):
             return "Success", 200
     except Exception as e:
         return "Error: " + str(e), 500
+
+
+def delete_room(room_id):
+    try:
+        roomID = ObjectId(room_id)
+        room = database.rooms.find_one({'_id': roomID})
+        if not room:
+            return "Error: room not found", 200
+        database.rooms.delete_one({'_id': roomID})
+        database.bookings.delete_many({'roomID': room_id})
+        return "Success", 200
+    except Exception as e:
+        return "Error: " + str(e), 500
