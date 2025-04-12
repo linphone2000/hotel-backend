@@ -5,11 +5,13 @@ import certifi
 
 
 mongo_uri = "mongodb+srv://linphone2000:linphone4321@cluster0.1f5lzka.mongodb.net/mydatabase"
+# mongo_uri = "mongodb://localhost:27017/mydatabase"
 
 
 # database_connect
 try:
     client = pymongo.MongoClient(mongo_uri, tlsCAFile=certifi.where())
+    # client = pymongo.MongoClient(mongo_uri)
     database = client.get_database()
     fs = GridFS(database)
     print("Connected to MongoDB Atlas successfully!")
